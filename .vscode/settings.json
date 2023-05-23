@@ -1,4 +1,5 @@
 {
+  "latex-workshop.latex.recipe.default": "pdflatex",
   "latex-workshop.latex.tools": [
     {
       "name": "latexmk",

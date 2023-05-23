@@ -470,7 +470,7 @@ Here is a quick overview of how the Scastie client and the Metals server interac
     \item \lstinline{/isConfigurationSupported}~: sent out by the client containing a \href{https://github.com/Maeeen/scastie/blob/main/api/src/main/scala/com.olegych.scastie.api/ApiModels.scala#LL132C101-L132C101}{\lstinline{ScastieMetalsOption(dependencies: Set[ScalaDependency], scalaTarget: ScalaTarget)}}
     
     \item \lstinline{/complete}~: sent out by the client containing a \href{https://github.com/Maeeen/scastie/blob/23e0fa998565a37d8ecfa36fa64d1268a9c1d12c/api/src/main/scala/com.olegych.scastie.api/ApiModels.scala#L169}{\lstinline{LSPRequestDTO(options: ScastieMetalsOption, offsetParams: ScastieOffsetParams)}}
-    \item and other similar requests to get documentation where every of them contains a \lstinline{ScastieMetalsOption}
+    \item and other similar requests to get documentation where every of them contains a \lstinline{ScastieMetalsOption} with a \lstinline{ScastieOffsetParams} to give the cursor's position.
 \end{itemize}
 
 When a client wants to make any of these requests, it should first of all probe the Metals runner to know whether the current configuration of the user is supported ; then it can make the \lstinline{/complete} request or similar. Note that in fact the \lstinline{/isConfigurationSupported} is not mandatory, but it is a good practice to actually show to the user that the configuration is not supported.
