@@ -481,6 +481,8 @@ While keeping in mind that there is no session, a solution to parse the directiv
 
 With directives, users can specify the dependencies and the Scala version directly in the code. To know whether the current configuration is supported, we need to know the directives (hence the code). In this case, we need to pack the \lstinline{ScastieMetalsOption} with the code. Note that some endpoints requires a \lstinline{ScastieOffsetParams} that already contains the code. One approach of modifying the huge codebase was to make only additions and not deletions, to avoid breaking anything.
 
+With this in mind, the endpoint \lstinline{/isConfigurationSupported} will return a \lstinline{ScastieMetalsOption}
+
 
 
 
