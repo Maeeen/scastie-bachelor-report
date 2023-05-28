@@ -475,6 +475,22 @@ Here is a quick overview of how the Scastie client and the Metals server interac
 
 When a client wants to make any of these requests, it should first of all probe the Metals runner to know whether the current configuration of the user is supported ; then it can make the \lstinline{/complete} request or similar. Note that in fact the \lstinline{/isConfigurationSupported} is not mandatory, but it is a good practice to actually show to the user that the configuration is not supported.
 
+\subsection{Worksheet mode?}
+
+Let's recall that this auto-completion provided by ScalaMeta's presentation compiler is similar to the one that one may have in an IDE. With this supposition, the presentation compiler expects a totally valid Scala project's code.
+
+Hence, in worksheet mode, it needs proper instrumentation. In this case, it is easier than before. It consists of only adding the following (and doing proper modifiations to the offset)~:
+
+\begin{lstlisting}
+object worksheet {
+    <user code>
+}
+\end{lstlisting}
+
+This will be talked in detail more in the following subsections.
+
+\subsection{Making the client aware of its dependencies}
+
 While keeping in mind that there is no session, a solution to parse the directives has to be thought. The design choice that has been made is to parse the directives server side, check whether all the dependencies are compatible and return a \lstinline{ScastieMetalsOption} with the Scala version and the dependencies. The client will have to send the \lstinline{ScastieMetalsOption} in every request.
 
 \subsection{Adding support for directives}
