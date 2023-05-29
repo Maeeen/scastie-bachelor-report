@@ -145,7 +145,7 @@ Keep in mind that reloading SBT is an operation that takes a lot of time and mak
 If one user wants to use -- for instance \lstinline{com.lihaoyi::os-lib} --, the load balancer will try to find a runner that has
 the library already loaded.
 
-More generally, one can definite 'configuration': the set containing the Scala version and libraries. The load balancer will try to find a
+More generally, one can define 'configuration': the set containing the Scala version and libraries. The load balancer will try to find a
 runner that has the same configuration as the required one to run a specific snippet -- to avoid reloading unnecessarily a runner.
 If it manages to find such a runner, it forwards the execution. Otherwise, it will ask for a runner to reload with the
 required configuration. This creates a lot of overhead -- hence, a lot of latency to the user -- to execute a snippet.
@@ -280,7 +280,7 @@ However, using such a solution discards the possibility of choosing a specific J
 
 \subsubsection{Known issues: Infinite compilation}
 
-An issue that is hard to tackle and has not been handled yet is infinite compilations. With \href{https://docs.scala-lang.org/scala3/reference/metaprogramming/index.html}{Scala's metaprogramming}, it is possible to create Scala code that never finishes to compile. Scala-CLI relies on \href{https://scalacenter.github.io/bloop/}{Bloop} to compile Scala code. In case of such "never-ending compilation" scripts, Bloop can not cancel the compilation~: this has been forwarded as an issue on \href{https://github.com/scalacenter/bloop/issues/2019}{Bloop's Github, issue \#2019}. The selected temporary solution is to make the JVM exit abruptly using \lstinline{sys.exit(-1)} if the compilation did not finish in a given period. The Docker container will be aware of the fact that the runner has killed itself and needs to be restarted. Also, the problematic snippet will be logged to enable further investigations.
+An issue that is hard to tackle and has not been handled yet is infinite compilations. With \href{https://docs.scala-lang.org/scala3/reference/metaprogramming/index.html}{Scala's metaprogramming}, it is possible to create Scala code that never finishes to compile. Scala-CLI relies on \href{https://scalacenter.github.io/bloop/}{Bloop} to compile Scala code. In case of such "never-ending compilation" scripts, Bloop can not cancel the compilation~: this has been forwarded as an issue on \href{https://github.com/scalacenter/bloop/issues/2019}{Bloop's Github, issue \#2019}. The selected temporary solution is to make the runner exit abruptly using \lstinline{sys.exit(-1)} if the compilation did not finish in a given period. The Docker container will be aware of the fact that the runner has killed itself and needs to be restarted. Also, the problematic snippet will be logged to enable further investigations.
 
 \subsection{Instrumentation and directives}
 
@@ -365,7 +365,7 @@ Scala-CLI notifies the BSP client on multiple events. Those in which we are inte
 
 A first implementation of the client kept track - for a possible update in the future - for multiple compilations~: however, this created some issue. To keep track of all compilations, two buffers of the types \lstinline{Map[SnippetId, List[LogMessage]]} and \lstinline{Map[SnippetId, List[Diagnostics]]} have been created. To keep track which snippet triggered any event, an \lstinline{originId} can be specified~:
 
-Suppose that the snippet with the \lstinline{snippetId = 1} is sent to be executed. Every request to the BSP will be linked to the \lstinline{snippetId} using \lstinline{originId} which takes the form of \lstinline{<snippetId>-<req. type>} (e.g. \lstinline{2-compile}, \lstinline{2-main-classes}). However, some diagnostics that are sent by Scala-CLI itself (and not bloop, e.g diagnostics for using a deprecated syntax of directives) did not contain this specified \lstinline{originId}.
+Suppose that the snippet with the \lstinline{snippetId = 2} is sent to be executed. Every request to the BSP will be linked to the \lstinline{snippetId} using \lstinline{originId} which takes the form of \lstinline{<snippetId>-<req. type>} (e.g. \lstinline{2-compile}, \lstinline{2-main-classes}). However, some diagnostics that are sent by Scala-CLI itself (and not bloop, e.g diagnostics for using a deprecated syntax of directives) did not contain this specified \lstinline{originId}.
 
 The solution that has been taken is to avoid non-necessary over complications and consider only a single compilation at a time, which is the currently implemented solution.
 
@@ -479,7 +479,7 @@ When a client wants to make any of these requests, it should first of all probe 
 
 Let's recall that this auto-completion provided by ScalaMeta's presentation compiler is similar to the one that one may have in an IDE. With this supposition, the presentation compiler expects a totally valid Scala project's code.
 
-Hence, in worksheet mode, it needs proper instrumentation. In this case, it is easier than before. It consists of only adding the following (and doing proper modifiations to the offset)~:
+Hence, in worksheet mode, it needs proper instrumentation. In this case, it is easier than before. It consists of only adding the following (and doing proper modifiations to the offset which is adding the indentation offset and the length of \lstinline|object worksheet {\n|)~:
 
 \begin{lstlisting}
 object worksheet {
@@ -487,11 +487,38 @@ object worksheet {
 }
 \end{lstlisting}
 
-This will be talked in detail more in the following subsections.
+With this in mind, we can understand why the \lstinline{//> using dep} was working without worksheet mode. When worksheet mode is disabled, the said instrumentation is then disabled and auto-completes as desired.
 
-\subsection{Making the client aware of its dependencies}
+The chosen solution to split the user code as done in the Scala-CLI runner's instrumentation part.
 
-While keeping in mind that there is no session, a solution to parse the directives has to be thought. The design choice that has been made is to parse the directives server side, check whether all the dependencies are compatible and return a \lstinline{ScastieMetalsOption} with the Scala version and the dependencies. The client will have to send the \lstinline{ScastieMetalsOption} in every request.
+\begin{lstlisting}
+<user directives>
+object worksheet {
+    <user code>
+}
+\end{lstlisting}
+
+When the user is making such a request, we need to appropriately take into consideration the given offset of the cursor. If the cursor is located in the directives, we do nothing. Otherwise, we need to appropriately offset it by \lstinline|object worksheet {\n|.
+
+One may read the code that handles this on the following file \href{https://github.com/Maeeen/scastie/blob/main/metals-runner/src/main/scala/scastie/metals/DTOExtensions.scala}{metals-runner/src/\ldots/DTOExtensions.scala}
+
+\subsection{Adding auto-completion of dependencies}
+
+To enable such an auto-completion, dependencies should be parsed and resolved at some point. Multiple solutions have been thought~:
+
+\begin{enumerate}
+    \item Parse the directives and resolve dependencies client-side
+    \item Parse the directives and resolve dependencies on the Metals runner's end
+    \item Parse the directives and resolve dependencies on the Sala-CLI's runner end and make the client aware of it, then make appropriate requests to the Metals runner with these information.
+\end{enumerate}
+
+The first choice is something that costs too much to the client to do. We want it to be lightweight so that it can run on any device. Keep in mind that we have to make it "refreshable" (i.e. when adding a dependency, either client or servers should be aware of such changes and give proper auto-completions).
+
+The last choice is too complex and involves creating new transmissions channels amongst totally independent components.
+
+One can try to make it simple and the second solution has been chosen~: parse the directives server side, check whether all the dependencies are compatible and return a \lstinline{ScastieMetalsOption} with the Scala version and the dependencies. The client will have to send the \lstinline{ScastieMetalsOption} in every request so that every call that worked using traditional targets will work with this specific \lstinline{ScastieMetalsOption}. This will be discussed further, in the next subsection :).
+
+%% TALK ABOUT PARSING IN THE NEXT SUBSECTION
 
 \subsection{Adding support for directives}
 
