@@ -12,7 +12,7 @@ footer: Marwan Azuz -- 29/06/23
 
 # What is [Scastie](https://scastie.scala-lang.org/)?
 
-* A demo is better than a long paragraph…
+* A demo is worth a thousand words…
 
 ---
 
@@ -46,10 +46,11 @@ footer: Marwan Azuz -- 29/06/23
 
 * The issue?
 → Compilation errors are not machine readable. Hard to handle them and forward them nicely to the users.
+→ Might create some obvious issues with my colleague…
 
 ---
 
-## Previous implementation with SBT behavior
+## Previous implementation with SBT
 
 :warning: The runner was **parsing the process' output**! Crazy people… I'm lazy.
 
@@ -66,7 +67,6 @@ __Solution__: A protocol?
 # Is there something like this already? Someone must have thought of it.
 
 OSS people are crazy.
-
 
 
 ---
