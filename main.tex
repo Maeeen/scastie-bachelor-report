@@ -456,7 +456,7 @@ Its behavior is not really surprising~:
     \item Prepend the code with the following~:
     \begin{itemize}
         \item \lstinline{//> using scala "<scala-version>"} with \lstinline{<scala-version>} being the Scala version of the snippet.
-        \item For each dependency~: \lstinline{//> using dep "<dependency.groupId>::<dependency.artifact>::<dependency.version>"} with \lstinline{<dependency.groupId>}, \lstinline{<dependency.artifact>} and \lstinline{<dependency.artifact} being respectively the dependency's \lstinline{groupId}, \lstinline{artifact}'s name and \lstinline{version} the version.
+        \item For each dependency~: \\ \lstinline{//> using dep "<dependency.groupId>::<dependency.artifact>::<dependency.version>"} with \lstinline{<dependency.groupId>}, \lstinline{<dependency.artifact>} and \lstinline{<dependency.artifact>} being respectively the dependency's \lstinline{groupId}, \lstinline{artifact}'s name and \lstinline{version} the version.
         \item \lstinline{"========"} to separate the directives from the user code.
     \end{itemize}
 \end{itemize}
@@ -516,7 +516,7 @@ To enable such an auto-completion, dependencies should be parsed and resolved at
 \begin{enumerate}
     \item Parse the directives and resolve dependencies client-side
     \item Parse the directives and resolve dependencies on the Metals runner's end and make the client aware of it
-    \item Parse the directives and resolve dependencies on the Sala-CLI's runner end and make the client aware of it, then make appropriate requests to the Metals runner with these information.
+    \item Parse the directives and resolve dependencies on the Scala-CLI's runner end and make the client aware of it, then make appropriate requests to the Metals runner with these information.
 \end{enumerate}
 
 The first choice is something that costs too much to the client to do. We want it to be lightweight so that it can run on any device. Keep in mind that we have to make it "refreshable" (i.e. when adding a dependency, either client or servers should be aware of such changes and give proper auto-completions).
@@ -552,9 +552,19 @@ The first case requires to have a way to know that the directives have changed. 
 
 Hence, the selected solution is the second one. When the user changes the directives, we show to the user a button to refresh directives. The user can then click on the said button to refresh the auto-completion. It simply restarts the directives.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{scastie_reloadmetals.png}
+    \caption{Refresh directives button}
+\end{figure}
+
 \underline{Note}~: details of implementation are not discussed because it is 1. not relevant in the context of this report, 2. talks about how ReactJS works and handles components which is not the purpose of this report and also is a bit of hell. The focus of the author is to explain the given user experience and the technical details that are relevant to the project. If any question occur about the implementation of this specific part, the author (me) will be happy to address them.
 
 \section{Conclusion and results?}
+
+With all of these minimal modifications, Scastie is now able to run Scala-CLI snippets on Scala-CLI which includes auto-completion of dependencies and Scala versions. The user experience is not perfect but it is a good start, it is a good proof of concept and showcases the potential of Scala-CLI.
+
+{\color{red}{TODO: Add some benchmarks}}
 
 \section{Special thanks}
 
