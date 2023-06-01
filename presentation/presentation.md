@@ -40,7 +40,7 @@ footer: Marwan Azuz -- 29/06/23
 
 ---
 
-## 1. A first ~~stupid~~ idea
+## 1. A first <!-- joke --> ~~stupid~~ <!-- joke end --> idea 
 
 ![](../scli_1.svg)
 
@@ -62,11 +62,15 @@ __Idea__: How do IDEs talk to compilers?
 
 __Solution__: A protocol?
 
+<!-- joke -->
+
 ---
 
 # Is there something like this already? Someone must have thought of it.
 
-OSS people are crazy.
+Open-source software people are crazy.
+
+<!-- joke end -->
 
 
 ---
@@ -81,7 +85,7 @@ Or to be short:
 
 ---
 
-## ![width:50](https://build-server-protocol.github.io/img/bsp-logo.svg)  Let's do it properly with the Build Server Protocol  
+## ![width:50](https://build-server-protocol.github.io/img/bsp-logo.svg) Let's do it properly with the Build Server Protocol  
 
 It's nice!
 
@@ -93,8 +97,133 @@ A protocol to talk to compilers. Inspired by the Language Server Protocol.
 
 * Did someone also made a library for this? Of course!
 
+<!-- joke -->
 ---
 
-# BSP 2
+# Why BSP?
 
+* Because Jędrzej (❤️) told me so…
+
+---
+
+# Please stop joking, it's a serious presentation.
+
+<!-- joke end -->
+
+---
+
+# Why BSP?
+
+* Trigger compilations (`buildTarget/compile`)
+* Trigger runs (`buildTarget/run`)
+* Get diagnostics such as compilation errors and warnings (notifications on `build/publishDiagnotics`)
+
+→ Looks perfect!
+
+---
+
+# What's more? Extensions! 💕
+
+* If the compiler has specific capabilities, some endpoints are defined. In the case of Scala and this project, the endpoint `buildTarget/scalaMainClasses` was useful.
+* Why? Wait for a bit… Everything in its time!
+
+---
+
+Side note: Futures are great in Scala.
+
+---
+
+# How does the actual code looks like? 1/2
+
+```scala
+    for (
+      r <- reloadWorkspace;
+      buildTarget <- getBuildTargetId;
+
+      // Compile
+      compilationResult <- withShortCircuit(buildTarget, target => compile(id, target));
+
+      // Get main class
+      // Note: it is combined to compilationResult so if compilationResult fails,
+      // then we do not continue
+      mainClass <- withShortCircuit[(BuildTargetIdentifier, CompileResult), ScalaMainClass](
+        combineEither(buildTarget, compilationResult),
+        {
+          case ((tId: BuildTargetIdentifier, _)) => getMainClass(tId)
+        }
+      );
+
+      // …
+```
+
+---
+
+# How does the actual code looks like? 2/2
+
+```scala
+      // Get JvmRunEnv
+      jvmRunEnv <- withShortCircuit[(BuildTargetIdentifier, ScalaMainClass), JvmEnvironmentItem](
+        combineEither(buildTarget, mainClass),
+        {
+          case ((tId: BuildTargetIdentifier, _)) => getJvmRunEnvironment(tId)
+        }
+      )
+```
+
+**Why?!** Everything in its time… 😉 Trust me.
+
+---
+
+# Instrumentation? With which magic we end-up with this?
+
+![](../scastie_instrumentation.png)
+
+---
+
+# Instrumentation walk-through 1/3
+
+Suppose that we execute 
+```scala
+1
+```
+
+---
+
+# Instrumentation walk-through 2/3
+
+🧙 Some magic…
+
+:warning: The shown result will be a beautified one. Refer to the report for details.
+
+---
+
+# Instrumentation walk-through 3/3
+
+Result:
+
+```scala
+import com.olegych.scastie.api.runtime._
+
+object Main {
+    def suppressUnusedWarnsScastie = Html
+    val playground = Playground
+    def main(args: Array[String]): Unit = {
+        playground.main(Array())
+        scala.Predef.println(<instrumentations result>)
+    }
+}
+
+object Playground extends ScastieApp {
+    private val instrumentationMap$ = Map[Position, Render].empty
+    def instrumentations$ = instrumentationMap$.toList.map {
+        case (pos, r) => Instrumentation(pos, r)
+    }
+
+    locally {
+        val $t = 1
+        instrumentationMap$(Position(0, 1)) = render($t)
+        $t
+    }
+}
+```
 
