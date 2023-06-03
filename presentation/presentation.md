@@ -388,6 +388,25 @@ The chosen solution is to log the problematic script, `sys.exit(-1)` and let Doc
 
 ---
 
+Example of non-compiling code (please do not compile it):
+
+```scala
+//> using scala "3.2.2"
+//> using lib "co.fs2::fs2-io:3.6.1"
+
+import cats.effect.*
+import fs2.*
+
+object Main extends IOApp.Simple:
+  def run: IO[Unit] = Stream.duration
+```
+
+On my pretty good PC, the compilation took 11GB of RAM, constant 50% usage of my CPU (i9-13900k), 2 minutes to fail.
+
+The runner is limited to 1.5GB of RAM.
+
+---
+
 # Where are we?
 
 1. Instrumentation :white_check_mark: 
@@ -404,7 +423,7 @@ Use `buildTarget/run` and voilà!
 
 # It did work as intented! However…
 
-Non-finishing program such as:
+Non-finishing programs such as:
 
 ```scala
 while(true) do println("hello to the ones reading the slides!")
@@ -415,6 +434,8 @@ or if you like for-comprehensions
 ```scala
 for (_ <- Stream.from(0)) do println("hello again…")
 ```
+
+create an issue.
 
 We can send a cancellation request to Scala-CLI to stop the program.
 
@@ -432,7 +453,11 @@ As I said, BSP is amazing. They have thought of everything.
 
 ---
 
+# Running Java by ourselves
 
+Extension of BSP for JVM:
+
+* `buildTarget/jvmRunEnvironment`
 
 ---
 
