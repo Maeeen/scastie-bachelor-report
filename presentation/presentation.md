@@ -8,6 +8,8 @@ footer: Marwan Azuz -- 29/06/23
 # Implementing Scala-CLI on Scastie
 ## Semester bachelor project at the Scala-Center
 
+> Please try to avoid printing this document, use the online version for links and saving trees 🌳
+
 ---
 
 # What is [Scastie](https://scastie.scala-lang.org/)?
@@ -187,6 +189,8 @@ Suppose that we execute
 1
 ```
 
+We are minimalist
+
 ---
 
 # Instrumentation walk-through 2/3
@@ -227,3 +231,20 @@ object Playground extends ScastieApp {
 }
 ```
 
+---
+
+# Remarks on the instrumentation
+
+* We have new objects
+* Comments will end-up in the `object Playground`.
+  - if comments ends up here, directives too! We have to put them at the top of the file.
+
+---
+
+# How to do it?
+
+Fairly easy thanks to the Scala standard library.
+
+```scala
+
+```
