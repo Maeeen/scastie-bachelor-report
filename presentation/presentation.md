@@ -12,11 +12,24 @@ footer: Marwan Azuz -- 29/06/23
 
 ---
 
+<!-- _footer : Reference: report chapter 0.0 -->
+# Before anything
+
+
+* I hope you are having a great day.
+* Take a bottle of water, it is really hot outside :hot_face:
+* This oral presentation is a condensed and oral version of my report. Some details had to be removed but for completeness, you may refer to it.
+  * Every slide that has a link to the report will be mentionned in the footer.
+
+---
+
 # What is [Scastie](https://scastie.scala-lang.org/)?
 
 * A demo is worth a thousand words…
 
 ---
+
+<!-- _footer: Reference: report chapter 1.2, 1.3 -->
 
 # How Scastie works?
 
@@ -42,6 +55,8 @@ footer: Marwan Azuz -- 29/06/23
 
 ---
 
+<!-- _footer: Reference: Report, 2.1 -->
+
 ## 1. A first <!-- joke --> ~~stupid~~ <!-- joke end --> idea 
 
 ![](../scli_1.svg)
@@ -55,6 +70,8 @@ footer: Marwan Azuz -- 29/06/23
 ## Previous implementation with SBT
 
 :warning: The runner was **parsing the process' output**! Crazy people… I'm lazy.
+
+:+1: Lazy is a good point despite what you might think, I like to write the fewest lines of code possible so it is easy to maintain :wink:
 
 ---
 
@@ -195,7 +212,7 @@ We are minimalist
 
 # Instrumentation walk-through 2/3
 
-🧙 Some magic…
+🧙 Some magic… Scala Meta-programming's documentation was not for me…
 
 :warning: The shown result will be a beautified one. Refer to the report for details.
 
@@ -246,5 +263,189 @@ object Playground extends ScastieApp {
 Fairly easy thanks to the Scala standard library.
 
 ```scala
-
+    val (userDirectives, userCode) = task.inputs.code.split("\n")
+      .span(line => line.startsWith("//>"))
 ```
+
+:+1:
+
+---
+
+# Now, what is the runner doing?
+
+Let's backtrack to all my tries, including the one where I took my laptop out in the replacement bus from Genève Cornavin to Chêne-Bourg, looking like a nerd in front of normal people.
+
+---
+
+# What's doing the runner?
+## 1. Starting Scala-CLI in BSP
+
+Spawns a `scala-cli bsp .` in a temporary empty folder. Scala-CLI initializes a new workspace.
+
+---
+
+I lied…
+
+It spawns `scala-cli bsp . -deprecation` to enable warnings on deprecations: 🤠.
+
+---
+
+## 2. Inits a BSP connection to the server
+
+`build/initialize`:
+
+```typescript
+export interface InitializeBuildParams {
+  /** The rootUri of the workspace */
+  rootUri: URI = "<folder>";
+
+  /** Name of the client */
+  displayName: String = "BspClient";
+
+  /** The version of the client */
+  version: String = "1.0.0";
+
+  /** The BSP version that the client speaks */
+  bspVersion: String = "2.1.0-M4";
+
+  /** The capabilities of the client */
+  capabilities: BuildClientCapabilities = BuildClientCapabilities(listOf("scala"));
+
+  /** … */
+}
+```
+
+---
+
+Once finished,
+
+---
+
+# The runner is ready for run requests!
+
+Overall idea:
+
+1. Instrument code, and write it on disk.
+2. Compile the code `buildTarget/compile`. Forward any error to the user.
+3. Run the code using `buildTarget/run`. Forward any result or timeout issue.
+
+You have seen the code before and it has way many more steps, what happened?!
+
+---
+
+
+## 1. Instrumenting the code
+
+We have to take into consideration the directives. This is done.
+
+Write everything to a file `main.scala`.
+
+---
+
+### :warning: Instrumentation needs to know the Scala version
+
+The runner tries to find the directive `//> using scala "<version>"`. Finds the target from `<version>` and forward it to the instrumenter!
+
+---
+
+# BSP world is here.
+
+---
+
+## 2. Compile the code
+
+Compilation was fairly easy to handle. But how does it work?
+
+---
+
+### How does it work?
+
+* Client (Scala-CLI runner) sends a `buildTarget/compile` request.
+* Server (Scala-CLI) will notify the progress and compilations errors in a notification `build/publishDiagnostics`.
+* We need to keep track of these diagnostics.
+
+---
+
+But before compiling, we need to refresh the workspace (to be extra-sure) that dependencies are taken into consideration!
+
+So the steps of compiling are:
+
+1. `workspace/reload`
+2. `workspace/buildTargets` to get the builds' target `id`.
+3. `buildTarget/compile` to compile. While keeping track of the diagnostics.
+
+---
+
+# Compilation is working! Except something…
+
+## Infinite compilations
+
+With Scala's meta-programming, it is possible to make code that never compiles. Despite sending cancellation requests, the cancellation never ends for the current file (that may contain this issue).
+
+The chosen solution is to log the problematic script, `sys.exit(-1)` and let Docker restart the container.
+
+<!-- _footer: Reference: report 2.2.3 -->
+
+---
+
+# Where are we?
+
+1. Instrumentation :white_check_mark: 
+2. Compiling :white_check_mark: 
+3. Running :negative_squared_cross_mark: 
+
+---
+
+# How to run the code?
+
+Use `buildTarget/run` and voilà!
+
+---
+
+# It did work as intented! However…
+
+Non-finishing program such as:
+
+```scala
+while(true) do println("hello to the ones reading the slides!")
+```
+
+or if you like for-comprehensions
+
+```scala
+for (_ <- Stream.from(0)) do println("hello again…")
+```
+
+We can send a cancellation request to Scala-CLI to stop the program.
+
+---
+
+But, it did not __work__ for a reason that is obscure and related to Scala-CLI's codebase. How to make it work then?
+
+As I said, BSP is amazing. They have thought of everything.
+
+---
+
+# We are grown-ups. I have enough knowledge (:lying_face:) to run it by myself.
+
+:warning: Scala cool kid area :sunglasses:
+
+---
+
+
+
+---
+
+# Final thanks
+
+---
+
+# Thank you for listening and your attention
+ Thanks for Julien Richard-Foy and Jędrzej Rochala for letting me work on this project
+It was a freaking good atmosphere to work on such a project. I will miss those weekly meetings on Monday with Jędrzej :smiling_face_with_tear:
+
+I hope the project suited your expectations, because it did suit mines
+
+---
+
+:heart:
