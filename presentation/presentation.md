@@ -451,6 +451,8 @@ As I said, BSP is amazing. They have thought of everything.
 
 :warning: Scala cool kid area :sunglasses:
 
+We can control the running process as we want to 🥰, including terminating it.
+
 ---
 
 # Running Java by ourselves
@@ -458,19 +460,103 @@ As I said, BSP is amazing. They have thought of everything.
 Extension of BSP for JVM:
 
 * `buildTarget/jvmRunEnvironment`
+  * Gives the classpath, specific Java CLI arguments, working directory, environment variables…
 
 ---
 
-# Final thanks
+# :warning: Do not fall in the same trap as me.
+
+In UNIX-like, classpath directories are separated by `:`. On Windows, it is `;`…
+
+Took me a while to find this.
+
+---
+
+# Note on running time exceptions
+
+After talking with Jędrzej, we decided to print out running time exceptions directly in the console.
+
+Multiple solutions have been thought before including:
+* Using a Java agent (issue: need to pack a .jar and configure the project for this, I prefer `Makefile`s than `build.sbt` files. Probably worked only in Java and needed some libraries)
+* Modifying instrumentation to add a `Try` (issue: need to modify the good tests, without doing any mistakes)
+
+
+__Before__ (with SBT): It was still parsing the output!
+
+---
+
+# :raised_hands: The runner is working :clap:
+
+---
+
+# The boring/funny part (depends on you)
+## UI
+
+---
+
+![](../scastie_newtarget.png)
+
+---
+
+Also, users can convert snippets from SBT to Scala-CLI
+
+![h:600px](../scastie_convert.png)
+
+---
+
+# Interesting part again: Metals
+
+How does it work?! How do I make it work?! \*panic\* :face_with_peeking_eye: :sweat:
+
+---
+
+# How do the client get auto-comp̂letions?
+
+![](../architecture.svg) 
+
+Focus on the Metals runner. It is totally independant.
+
+---
+
+# How do the client get auto-completions?
+
+* Client sends a `/isConfigurationSupported` to know whether the configuration (i.e. set of dependencies and Scala version) are compatible and if the auto-completion is possible.
+* Client sends a multiple requests when hovering, etc. with the configuration.
+
+---
+
+# How can we modify things so that it handles directives?
+
+The selected solution:
+
+* Bundle the snippet's content in `/isConfigurationSupported`
+* Let the Metals runner parse the directives, do its job and return a specific `ScastieMetalsOption` that contains all the directives :)
+* The client will have to give that `ScastieMetalsOption` for next requests.
+* Easy life?
+
+---
+
+# Metals now works!
+
+---
+
+# But nice things do not last in life…
+
+---
+
+# …like my presentation.
 
 ---
 
 # Thank you for listening and your attention
- Thanks for Julien Richard-Foy and Jędrzej Rochala for letting me work on this project
-It was a freaking good atmosphere to work on such a project. I will miss those weekly meetings on Monday with Jędrzej :smiling_face_with_tear:
+Thanks for Julien Richard-Foy and Jędrzej Rochala for letting me work on this project
+It was a freaking good atmosphere to work on such a project. I will miss those weekly meetings on Monday with Jędrzej :smiling_face_with_tear:.
 
-I hope the project suited your expectations, because it did suit mines
+Thanks to Eugène Flesselle and Hamza Remmal for giving some tips, gave some ideas, talking about the project.
 
----
+All of this made me fond of the Scala ecosystem. Maybe count me as a future Dotty contributor?
 
-:heart:
+I hope the project suited your expectations, because it did suit mines.
+
+> You are now well prepared for "hell" codebases − Jędrzej, 2023
+
