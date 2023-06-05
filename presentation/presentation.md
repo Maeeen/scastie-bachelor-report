@@ -26,6 +26,20 @@ footer: Marwan Azuz -- 29/06/23
 # What is [Scastie](https://scastie.scala-lang.org/)?
 
 * A demo is worth a thousand words…
+---
+
+# Why?
+
+* Delays with SBT on different configurations
+* Friendly directives
+
+```scala
+//> using scala 3.2.0
+//> using dep "<dep>
+
+@main def main = println("hello")
+
+```
 
 ---
 

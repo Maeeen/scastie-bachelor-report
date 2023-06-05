@@ -492,7 +492,7 @@ object worksheet {
 }
 \end{lstlisting}
 
-With this in mind, we can understand why the \lstinline{//> using dep} was working without worksheet mode. When worksheet mode is disabled, the said instrumentation is then disabled and auto-completes as desired.
+With this in mind, we can understand why the \lstinline{//> using dep} was working without worksheet mode. When worksheet mode is disabled, the said instrumentation is then disabled and auto-completes as desired because it is at the top of the file.
 
 The chosen solution to split the user code as done in the Scala-CLI runner's instrumentation part.
 
