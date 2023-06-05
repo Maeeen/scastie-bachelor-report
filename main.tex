@@ -63,10 +63,6 @@
 \begin{titlingpage}
 \maketitle
 
-\begin{center}
-    {\huge \color{red}{This is a draft. Not meant for grading or reading purposes.}}
-\end{center}
-
 \begin{figure}[ht]
     \includegraphics[align=c,width=.4\linewidth]{logos/scala-center-logo-black@2x.png}
     \hfill
@@ -136,7 +132,7 @@ Scastie has a little flaw in how it runs snippets~: when using a configuration t
 To explain more in detail this problem, let's go with a quick overview of how Scastie works.
 Scastie is a distributed system and has different components. Here a quick visual representation of the architecture~:
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includesvg[width=0.9\columnwidth]{architecture.svg}
     \label{fig:scastie_architecture}
@@ -146,7 +142,7 @@ Scastie is a distributed system and has different components. Here a quick visua
 When an user submits a snippet to be ran, it passes through the dispatcher that sends it to the load balancer that forwards it to one of the
 available runners.
 
-One of the current issues with Scastie is how it handles libraries and is linked with how SBT handles it.
+The current issue with Scastie is how it handles libraries and is linked with how SBT handles it.
 On a local SBT project, one should add the library in the configuration file \lstinline{build.sbt} and then reload SBT.
 Keep in mind that reloading SBT is an operation that takes a lot of time and makes the specific runner busy.
 If one user wants to use -- for instance \lstinline{com.lihaoyi::os-lib} --, the load balancer will try to find a runner that has
@@ -160,6 +156,8 @@ required configuration. This creates a lot of overhead -- hence, a lot of latenc
 The goal of this project is to replace SBT by Scala-CLI~: a faster Scala runner. We can safely assume that the utterly complex Scala Build
 Tool represents a too much convoluted tool to be used on Scastie, which main role is to execute quick user snippets.
 Therefore, Scala-CLI seems to be a suitable replacement for SBT.
+
+But, that's not everything~:
 
 \subsection{Scala-CLI directives}
 
@@ -210,7 +208,7 @@ From now on, we will refer to "script" as a general Scala file: it could be a wo
 
 A first way of tackling this problem would be to let Scala-CLI in charge of everything: compiling and running the script. Not even bothering to save the script to a file: pipe the script to the standard input of Scala-CLI and get the result of it. This enables for a single runner to execute multiple scripts at the same time.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includesvg[width=0.9\columnwidth]{scli_1.svg}
     \caption{The most basic runner}
@@ -245,7 +243,7 @@ Many builds tools offer a protocol to interact with them. One of these protocols
 
 Interacting with the build server protocol is still done with the input and output streams of the child process, but using JSON with an extra-header. There exists multiple solutions to handle the BSP protocol but the most straightforward way is to use the \href{https://mvnrepository.com/artifact/ch.epfl.scala/bsp4j}{ch.epfl.scala::bsp4j} package on Maven. A similar artefact exists for Scala (\lstinline{ch.epfl.scala::bsp4s})~: however, it has not been updated after 2021 according to the Scaladex and had almost no documentation on its usage on the Build Server Protocol specification (by the time writing this report.)
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includesvg[width=0.9\columnwidth]{sclirunner.svg}
     \caption{Architecture of the Scala-CLI runner}
@@ -275,7 +273,7 @@ Keep in mind that Scastie has to stay resilient against annoying users to not ov
         while (true) do println("oopsie")
 \end{lstlisting}
 
-However, Scala-CLI has an issue~: when scripts are run by Scala-CLI, they can not be canceled despite submitting a cancelation request. This is an issue in Scala-CLI's codebase. So another solution has to be found.
+However, Scala-CLI has an issue~: when scripts are run by Scala-CLI, they can not be canceled despite submitting a cancelation request. This is an issue in Scala-CLI's codebase when ran with GraalVM (which is the default one that Coursier installs). So another solution has to be found.
 
 \subsubsection{Running snippets: let us execute Java on our own}
 
@@ -564,7 +562,100 @@ Hence, the selected solution is the second one. When the user changes the direct
 
 With all of these minimal modifications, Scastie is now able to run Scala-CLI snippets on Scala-CLI which includes auto-completion of dependencies and Scala versions. The user experience is not perfect but it is a good start, it is a good proof of concept and showcases the potential of Scala-CLI.
 
-{\color{red}{TODO: Add some benchmarks}}
+This project addresses the two following issues~:
+
+\begin{enumerate}
+    \item \href{https://github.com/SethTisue}{@SethTisue} and the 10 others that liked his issue to support directives on \href{https://github.com/scalacenter/scastie/issues/603}{issue \#603, scalacenter/scastie on Github}
+    \item and the most important~: a faster reload for the Scala version and dependencies when changed~!
+\end{enumerate}
+
+\subsection{Benchmarking}
+
+\subsubsection{Benchmarking setup}
+
+The benchmark will be done on a Intel i9 13900KF @ 5.8 GHz, with 64 GB of RAM running Ubuntu wit the Windows Subsystem for Linux. For completeness, the network connection is located next to EPFL in Switzerland, is 890 Mbps, latency is 18ms using the \href{https://fast.com}{fast.com} website.
+
+Scastie will be launched with only one runner.
+
+\subsubsection{How the benchmark will be done}
+
+We will compare the performance of the original Scastie that uses SBT as fetched by the time writing this report (on \href{https://github.com/scalacenter/scastie/commit/d783858db0516eb5e7ed9f2a2101c85e8773afc0}{main branch -- commit d783858 -- by the time writing this report}) and the modified Scastie.
+
+
+We will run the following snippets~:
+\begin{enumerate}
+    \item A simple snippet that prints "hello", no dependencies, latest Scala 3 version
+    \item This same snippet (to check performance on same configuration snippets)
+    \item A simple snippet printing "hello", no dependencies, Scala 2.13.6
+    \item The same snippet (to check how the IVY cache handles it)
+\end{enumerate}
+
+The goal is to showcase that Scala-CLI handles reload faster than SBT.
+
+Before benchmarking, the \lstinline{~/.ivy2} folder will be removed.
+
+We will measure the timing of the \lstinline{api/progress-sse/<snippet_id>} request.
+
+\subsubsection{Benchmarking results}
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|l|l|}
+    \hline
+                                                       & SBT Scastie (s) & Scala-CLI Scastie (s) \\ \hline
+    "hello", no dep., Scala 3.2.2                      & 3.03        & 0.668             \\ \hline
+    "hello", no dep., Scala 3.2.2 (second time and more)        & 0.351       & 0.472             \\ \hline
+    "hello", cats/algebra, Scala 2.13.10               & 6.95        & 3.15              \\ \hline
+    "hello", cats/algebra, Scala 2.13.10 (second time and more) & 0.355       & 0.890             \\ \hline
+    \end{tabular}
+    }
+\end{table}
+
+We can see that Scala-CLI is faster than SBT when the configuration changes. However, when the configuration does not change, SBT is faster than Scala-CLI.
+
+The main point here is shown, Scala-CLI handles faster the reload, which is something that can easily happen in a real-world scenario~: imagine 7 users (there is 6 runners), each one of them with a different configuration, they will encounter this heavy reload for some of the runs.
+
+\subsubsection{Why is Scala-CLI slower when the config does not change?}
+
+We can find the culprit really easily since there is two phases of running a snippet: compilation and running the snippet. Those are totally distinct since we had to implement the running of the snippet ourselves with \lstinline{java}. A quick benchmark reveals that for a simple snippet that takes $\approx 0.6$s, the compilation takes $\approx 0.3$s and the running takes $\approx 0.3$s. The running is slower because we have to launch a new JVM and has to initialize. This is not the case of SBT since it forks the existing JVM.
+
+\subsection{Conclusion}
+
+Here is a small list of pro and cons of using Scala-CLI~:
+
+\begin{itemize}
+    \item \textbf{Pros}~: \begin{itemize}
+        \item Faster reload
+        \item Cool directives (no need to share an annoying \lstinline{build.sbt} file)
+        \item More lightweight and faster compilation times than SBT
+    \end{itemize}
+    \item \textbf{Cons}~: \begin{itemize}
+        \item No support for Scala.js (as this was out of scope of the project)
+        \item No support for compiler plugins and fancy \lstinline{build.sbt} files
+        \item Need to execute another JVM to run the snippet (due to the mitigation of infinite scripts)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Future work}
+
+This project is a proof-of-concept. It showcases the possibles advantages and disadvantages (including the lack of documentation of the build server protocol) of using Scala-CLI on Scastie.
+It remains however a few issues that need to be worked on~:
+
+\begin{itemize}
+    \item Cancelling runs~: one might think of using the OpenJDK version of Scala-CLI and Bloop to cancel the execution of a snippet ; instead of letting the runner spawn Java by itself.
+    \item Surprising "internal error"~: oftenly (or rarely depending on your Scala-CLI version), the runner will return an exception coming from the \lstinline{bsp4j} library. This needs to be properly debugged and the issue may be in the library itself -- that needs to be fixed.
+    \item Better auto-completion of directives~: currently, we rely on the Metals runner for the completion of directives. A fancy UI could be made to help the user to write directives.
+\end{itemize}
+
+\section{References}
+
+Since most links are already in the report, here is a quick list of references that have been used to write this report~:
+
+\begin{itemize}
+    \item The Build Server Protocol specification \href{https://build-server-protocol.github.io/docs/specification}{https://build-server-protocol.github.io/docs/specification}
+    \item Scala-CLI's documentation \href{https://scala-cli.virtuslab.org/docs/overview}{https://scala-cli.virtuslab.org/docs/overview}
+\end{itemize}
 
 \section{Special thanks}
 
@@ -577,6 +668,5 @@ A real and grateful thanks to~:
 \end{itemize}
 
 It has been a pleasure to explore the Scala language in this manner and I hope that this project will be useful to the community~!
-
 
 \end{document}
