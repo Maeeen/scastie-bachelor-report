@@ -503,7 +503,7 @@ object worksheet {
 }
 \end{lstlisting}
 
-When the user is making such a request, we need to appropriately take into consideration the given offset of the cursor. If the cursor is located in the directives, we do nothing. Otherwise, we need to appropriately offset it by \lstinline|object worksheet {\n|.
+When the user is making such a request, we need to appropriately take into consideration the given offset of the cursor. If the cursor is located in the directives, we do nothing. Otherwise, we need to appropriately offset it by \lstinline|object worksheet {\n| with the directives of the user.
 
 One may read the code that handles this on the following file \href{https://github.com/Maeeen/scastie/blob/main/metals-runner/src/main/scala/scastie/metals/DTOExtensions.scala}{metals-runner/src/\ldots/DTOExtensions.scala}
 
