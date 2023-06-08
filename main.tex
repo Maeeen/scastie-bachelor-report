@@ -73,7 +73,7 @@
 \newpage
 
 
-This document contains a lot of clickable links, that can be used to jump on specific code or documentation.
+This document contains a lot of clickable links, that can be used to jump to specific codes or documentation.
 Feel free to read it on a PDF viewer instead of printing it. You are saving some trees!
 
 
@@ -94,7 +94,7 @@ It offers a quick and easy way to write Scala code in an interactive manner, sim
     \caption{Using Scastie to run code for demonstration purposes on the CS-206 Parallelism \& Concurrency course at EPFL.}
 \end{figure}
 
-In the same manner as worksheets, it offers a preview of intermediate values~:
+Same as worksheets, it offers a preview of intermediate values~:
 
 \begin{figure}[H]
     \centering
@@ -111,7 +111,7 @@ and also features autocompletions using Metals~:
 \subsection{Usage of Scastie~?}
 
 Scastie is great to have a worksheet right in the browser, accessible from any device.
-When teaching the Scala language, it can be a quite handy tool as the following tweet demonstrates~:
+When teaching the Scala language, it can be quite a handy tool as the following tweet demonstrates~:
 
 \begin{figure}[h!]
     \centering
@@ -129,8 +129,8 @@ perfect to demo the usage of a library or Scala feature~!
 
 Scastie has a little flaw in how it runs snippets~: when using a configuration that is not the default configuration
 (i.e. specific Scala version and/or libraries), it can have a lot of delay when running a snippet.
-To explain more in detail this problem, let's go with a quick overview of how Scastie works.
-Scastie is a distributed system and has different components. Here a quick visual representation of the architecture~:
+To explain tihs problem more in detail, let's go with a quick overview of how Scastie works.
+Scastie is a distributed system and has different components. Here is a quick visual representation of the architecture~:
 
 \begin{figure}[H]
     \centering
@@ -139,7 +139,7 @@ Scastie is a distributed system and has different components. Here a quick visua
     \caption{Quick visual overview of Scastie's architecture}
 \end{figure}
 
-When an user submits a snippet to be ran, it passes through the dispatcher that sends it to the load balancer that forwards it to one of the
+When a user submits a snippet to be run, it passes through the dispatcher that sends it to the load balancer that forwards it to one of the
 available runners.
 
 The current issue with Scastie is how it handles libraries and is linked with how SBT handles it.
@@ -154,14 +154,14 @@ If it manages to find such a runner, it forwards the execution. Otherwise, it wi
 required configuration. This creates a lot of overhead -- hence, a lot of latency to the user -- to execute a snippet.
 
 The goal of this project is to replace SBT by Scala-CLI~: a faster Scala runner. We can safely assume that the utterly complex Scala Build
-Tool represents a too much convoluted tool to be used on Scastie, which main role is to execute quick user snippets.
+Tool represents a too much convoluted tool to be used on Scastie, whose main role is to execute quick user snippets.
 Therefore, Scala-CLI seems to be a suitable replacement for SBT.
 
 But, that's not everything~:
 
 \subsection{Scala-CLI directives}
 
-Adding Scala-CLI offers for a quick and easy way to specify how Scala should be ran. The two most important ones are~:
+Adding Scala-CLI offers for a quick and easy way to specify how Scala should be run. The two most important ones are~:
 
 \begin{lstlisting}[style=sc]
 //> using scala "2"
@@ -196,17 +196,17 @@ The project has been decomposed into the following milestones~:
 \end{enumerate}
 
 The report will follow an almost linear approach of all the milestones achieved during this project,
-that has been done in the context of a mandatory semester project at EPFL.
+done in the context of a mandatory semester project at EPFL.
 
 \section{The birth of the Scala-CLI runner}
 
-Multiple solutions about how to interact with Scala-CLI have been thought. Here is a list with explanations on every of these approach.
+Multiple solutions about how to interact with Scala-CLI have been thought. Here is a list with explanations on every approach.
 
 From now on, we will refer to "script" as a general Scala file: it could be a worksheet or a standalone Scala file.
 
 \subsection{The most basic runner -- ever}
 
-A first way of tackling this problem would be to let Scala-CLI in charge of everything: compiling and running the script. Not even bothering to save the script to a file: pipe the script to the standard input of Scala-CLI and get the result of it. This enables for a single runner to execute multiple scripts at the same time.
+A first way of tackling this problem would be to let Scala-CLI in charge of everything: compiling and running the script. Not even bothering to save the script to a file: piping the script to the standard input of Scala-CLI and getting the result of it. This enables for a single runner to execute multiple scripts at the same time.
 
 \begin{figure}[H]
     \centering
@@ -216,7 +216,7 @@ A first way of tackling this problem would be to let Scala-CLI in charge of ever
 
 Spawning a process, piping content to the input and listening the output can be easily done in Scala using the \href{https://dotty.epfl.ch/api/scala/sys/process.html}{scala.sys.process} package. Such a prototype can be found on commit \href{https://github.com/Maeeen/scastie/blob/a74627d080f70f664931133632f06f514a2856f8/scli-runner/src/main/scala/com.olegych.scastie.sclirunner/ScliActor.scala}{\lstinline{a74627d}, file \lstinline{ScliActor.scala}}
 
-This solution is easy and quick. However, it is not resilient to compilation errors without extensive effort~: since the output is made to be shown in a terminal for a human, managing through such a solution requires proper parsing (which will be very likely unnecessarily complicated and archaic).
+This solution is easy and quick. However, it is not resilient to compilation errors without extensive effort~: since the output is made to be shown in a terminal for a human, such a solution requires proper parsing (which will be very likely unnecessarily complicated and archaic).
 
 Here is an example~: 
 
@@ -235,13 +235,13 @@ Compilation failed
 
 This is how Scastie handles SBT by default and it would be preferable to go with a more reliable option that offers interaction in a machine-understandable format.
 
-A side remark~: my fellow student colleague working on Scastie implements multiple files support. Choosing such a solution and stopping here would require extra modifications to the runner to add such a feature.
+A side remark~: my fellow student colleague working on Scastie implements multiple file support. Choosing such a solution and stopping here would require extra modifications to the runner to add such a feature.
 
 \subsection{The Build Server Protocol at the rescue}
 
 Many builds tools offer a protocol to interact with them. One of these protocols is the BSP (short for Build Server Protocol, see the specification on \href{https://build-server-protocol.github.io/docs/specification}{build-server-protocol.github.io/docs/specification}). Scala-CLI does offer a BSP server with the command line argument \lstinline{bsp}.
 
-Interacting with the build server protocol is still done with the input and output streams of the child process, but using JSON with an extra-header. There exists multiple solutions to handle the BSP protocol but the most straightforward way is to use the \href{https://mvnrepository.com/artifact/ch.epfl.scala/bsp4j}{ch.epfl.scala::bsp4j} package on Maven. A similar artefact exists for Scala (\lstinline{ch.epfl.scala::bsp4s})~: however, it has not been updated after 2021 according to the Scaladex and had almost no documentation on its usage on the Build Server Protocol specification (by the time writing this report.)
+Interacting with the build server protocol is still done with the input and output streams of the child process, but using JSON with an extra-header. There exists multiple solutions to handle the BSP protocol but the most straightforward way is to use the \href{https://mvnrepository.com/artifact/ch.epfl.scala/bsp4j}{ch.epfl.scala::bsp4j} package on Maven. A similar artefact exists for Scala (\lstinline{ch.epfl.scala::bsp4s})~: however, it has not been updated after 2021 according to the Scaladex and had almost no documentation on its usage on the Build Server Protocol specification (by the time this report was written.)
 
 \begin{figure}[H]
     \centering
@@ -251,29 +251,29 @@ Interacting with the build server protocol is still done with the input and outp
 
 In this configuration, the runner spawns a Scala-CLI server in BSP mode inside a temporary folder. Afterwards, the BSP client initializes the workspace to make it ready for executions.
 
-Then, on every script that needs to be ran, the content of the user script is written to a \lstinline{main.scala} file, at the root of the project. Afterwards, the BSP client does the following tasks~:
+Then, on every script that needs to be run, the content of the user script is written to a \lstinline{main.scala} file, at the root of the project. Afterwards, the BSP client does the following tasks~:
 
 \begin{enumerate}
-    \item Reloading the workspace \href{https://build-server-protocol.github.io/docs/specification#reload-request}{\lstinline{workspace/reload}}~: to be sure that any dependencies changes is taken into consideration.
-    \item Get build targets' id \href{https://build-server-protocol.github.io/docs/specification#workspace-build-targets-request}{\lstinline{workspace/buildTargets}}~: since Scala-CLI setups a new workspace, it has a specific build id. This id has to be specified for every request afterwards. Let's note that we take the first build target which is not a test build target.
-    \item Compilation \href{https://build-server-protocol.github.io/docs/specification#compile-request}{\lstinline{buildTarget/compile}}~: Triggers the compilation of the workspace.
+    \item Reloading the workspace \href{https://build-server-protocol.github.io/docs/specification#reload-request}{\lstinline{workspace/reload}}~: to be sure that any dependency changes is taken into consideration.
+    \item Geting build targets' id \href{https://build-server-protocol.github.io/docs/specification#workspace-build-targets-request}{\lstinline{workspace/buildTargets}}~: since Scala-CLI set ups a new workspace, it has a specific build id. This id has to be specified for every request afterwards. Let's note that we take the first build target which is not a test build target.
+    \item Compiling \href{https://build-server-protocol.github.io/docs/specification#compile-request}{\lstinline{buildTarget/compile}}~: Triggers the compilation of the workspace.
 \end{enumerate}
 
 \subsubsection{Running snippets: let Scala-CLI run the snippet}
 
 \begin{enumerate}
     \setcounter{enumi}{3}
-    \item Run \href{https://build-server-protocol.github.io/docs/specification#compile-request}{\lstinline{buildTarget/run}}~: let Scala-CLI runs by itself the script
+    \item Run \href{https://build-server-protocol.github.io/docs/specification#compile-request}{\lstinline{buildTarget/run}}~: let Scala-CLI run by itself the script
 \end{enumerate}
 
-Keep in mind that Scastie has to stay resilient against annoying users to not overload unnecessarily the runners. For instance, the following script should be canceled after a timeout (e.g. 30 seconds)~:
+Keep in mind that Scastie has to stay robust against annoying users to not overload the runners unnecessarily. For instance, the following script should be canceled after a timeout (e.g. 30 seconds)~:
 
 \begin{lstlisting}
     @main def main =
         while (true) do println("oopsie")
 \end{lstlisting}
 
-However, Scala-CLI has an issue~: when scripts are run by Scala-CLI, they can not be canceled despite submitting a cancelation request. This is an issue in Scala-CLI's codebase when ran with GraalVM (which is the default one that Coursier installs). So another solution has to be found.
+However, Scala-CLI has an issue~: when scripts are run by Scala-CLI, they cannot be canceled despite submitting a cancelation request. This is an issue in Scala-CLI's codebase when run with GraalVM (which is the default one that Coursier installs). So another solution has to be found.
 
 \subsubsection{Running snippets: let us execute Java on our own}
 
@@ -281,11 +281,11 @@ The main idea would be to delegate the "executing" part of the code snippet to t
 
 Using the \href{https://build-server-protocol.github.io/docs/extensions/jvm#run-environment-request}{buildTarget/jvmRunEnvironment}, one can get the \lstinline{classpath} for the compiled user code. Launching Java is then straightforward~: \lstinline{java <main-class> <additional-run-settings>} where \lstinline{<additional-run-settings>} contains the additional run settings given by the BSP request. Specific environment variables have to be specified according to that same BSP request, including setting the \lstinline{CLASSPATH} environment variable.
 
-However, using such a solution discards the possibility of choosing a specific JVM to run a snippet, using the \lstinline{//> using jvm "<jvm>"} directive. It is however preferable to not let users chose their specific JVM instead of letting them submitting scripts that do not halt.
+However, such a solution discards the possibility of choosing a specific JVM to run a snippet, using the \lstinline{//> using jvm "<jvm>"} directive. It is however preferable to not let users chose their specific JVM instead of letting them submitting scripts that do not halt.
 
 \subsubsection{Known issues: Infinite compilation}
 
-An issue that is hard to tackle and has not been handled yet is infinite compilations. With \href{https://docs.scala-lang.org/scala3/reference/metaprogramming/index.html}{Scala's metaprogramming}, it is possible to create Scala code that never finishes to compile. Scala-CLI relies on \href{https://scalacenter.github.io/bloop/}{Bloop} to compile Scala code. In case of such "never-ending compilation" scripts, Bloop can not cancel the compilation~: this has been forwarded as an issue on \href{https://github.com/scalacenter/bloop/issues/2019}{Bloop's Github, issue \#2019}. The selected temporary solution is to make the runner exit abruptly using \lstinline{sys.exit(-1)} if the compilation did not finish in a given period. The Docker container will be aware of the fact that the runner has killed itself and needs to be restarted. Also, the problematic snippet will be logged to enable further investigations.
+An issue that is hard to tackle and has not been handled yet is infinite compilations. With \href{https://docs.scala-lang.org/scala3/reference/metaprogramming/index.html}{Scala's metaprogramming}, it is possible to create Scala code that never finishes to compile. Scala-CLI relies on \href{https://scalacenter.github.io/bloop/}{Bloop} to compile Scala code. In case of such "never-ending compilation" scripts, Bloop cannot cancel the compilation~: this has been forwarded as an issue on \href{https://github.com/scalacenter/bloop/issues/2019}{Bloop's Github, issue \#2019}. The selected temporary solution is to make the runner exit abruptly using \lstinline{sys.exit(-1)} if the compilation did not finish in a given period. The Docker container will be aware of the fact that the runner has killed itself and needs to be restarted. Also, the problematic snippet will be logged to enable further investigations.
 
 \subsection{Instrumentation and directives}
 
@@ -326,9 +326,9 @@ As this is out of scope of this project, the details of implementation and desig
 
 A first issue to tackle was the hard-coded dependency~: for the instrumentation to work, the library \lstinline{org.scastie::runtime-scala} is needed. So, the Scala CLI runner has to prepend the instrumented code with the line \lstinline{//> using lib "org.scastie::runtime-scala"}.
 
-However, instrumenting code requires to be aware in which version of Scala the snippet is. One can not use the request \lstinline{buildTarget/scalacOptions} or similar because the worksheet code is not compilable at all~! So, the Scala CLI runner has to be aware of the Scala version used by the snippet before doing any BSP request.
+However, instrumenting code requires to be aware in which version of Scala the snippet is. One cannot use the request \lstinline{buildTarget/scalacOptions} or similar because the worksheet code is not compilable at all~! So, the Scala CLI runner has to be aware of the Scala version used by the snippet before doing any BSP request.
 
-This has been done by checking if the directive \lstinline{//> using scala "<scala-version>"} is present in the user directives, and in which case, retrieve the Scala version. If it does not find the directive or finds an invalid Scala version, the Scala CLI runner will use the default Scala version (i.e. the latest Scala 3 version).
+This has been done by checking if the directive \lstinline{//> using scala "<scala-version>"} is present in the user directives, retrieving the Scala version if it is. If it does not find the directive or finds an invalid Scala version, the Scala CLI runner will use the default Scala version (i.e. the latest Scala 3 version).
 
 
 \subsection{Handling directives}
@@ -341,17 +341,17 @@ Before any execution, the code given by the user is split in two. Namely user di
 
 . Directives can only appear at the top of a Scala file \href{https://scala-cli.virtuslab.org/docs/guides/using-directives#semantics}{according to the documentation}. 
 
-However, the syntax to specify directives have gone through a lot of changes since its introduction. The support of the directives will be discussed for each part of Scastie on which modifications have been made.
+However, the syntax to specify directives has gone through a lot of changes since its introduction. The support of the directives will be discussed for each part of Scastie on which modifications have been made.
 
 On the runner end, only directives specified with the most recent syntax (i.e. using these \lstinline{//>} comments) will be supported. Support for the \lstinline{// using} and \lstinline{@using} directive could be added but since it is now deprecated, no need to handle them.
 
 To get back on the instrumentation, the code will be instrumented without these directives and prepended before written to the \lstinline{main.scala} file.
 
-\underline{Note, attention to the reader}~: This comes at a surprise to no-one, but we have to take into consideration that the code sent by the user is not going to be the code that is going to be executed! 
+\underline{Note, attention to the reader}~: This comes at a surprise to no-one, but we have to take into consideration that the code sent by the user is not the code that is going to be executed! 
 
 \subsection{Java is confused despite knowing its classpath: which class is the Main class?}
 
-Because of instrumentation, we have now multiple classes that are now candidates for an execution!
+Because of instrumentation, we now multiple classes that are candidates for an execution!
 
 We could either hard-code it, or make it properly.
 
@@ -365,26 +365,26 @@ Scala-CLI notifies the BSP client on multiple events. Those in which we are inte
 
 \begin{itemize}
     \item \href{https://build-server-protocol.github.io/docs/specification#log-message}{\lstinline{build/logMessage}}~: which is sent by Scala-CLI to "ask the client to log a particular message."
-    \item \href{https://build-server-protocol.github.io/docs/specification#publish-diagnostics}{\lstinline{build/publishDiagnostics}}~: which is sent by Scala-CLI to report compilation warnings, errors and informations, generally called diagnostics.
+    \item \href{https://build-server-protocol.github.io/docs/specification#publish-diagnostics}{\lstinline{build/publishDiagnostics}}~: which is sent by Scala-CLI to report compilation warnings, errors and other pieces of information, generally called diagnostics.
 \end{itemize}
 
-A first implementation of the client kept track - for a possible update in the future - for multiple compilations~: however, this created some issue. To keep track of all compilations, two buffers of the types \lstinline{Map[SnippetId, List[LogMessage]]} and \lstinline{Map[SnippetId, List[Diagnostics]]} have been created. To keep track which snippet triggered any event, an \lstinline{originId} can be specified~:
+A first implementation of the client kept track - for a possible update in the future - for multiple compilations~: however, this created an issue. To keep track of all compilations, two buffers of the types \lstinline{Map[SnippetId, List[LogMessage]]} and \lstinline{Map[SnippetId, List[Diagnostics]]} have been created. To keep track of which snippet triggered any event, an \lstinline{originId} can be specified~:
 
 Suppose that the snippet with the \lstinline{snippetId = 2} is sent to be executed. Every request to the BSP will be linked to the \lstinline{snippetId} using \lstinline{originId} which takes the form of \lstinline{<snippetId>-<req. type>} (e.g. \lstinline{2-compile}, \lstinline{2-main-classes}). However, some diagnostics that are sent by Scala-CLI itself (and not bloop, e.g diagnostics for using a deprecated syntax of directives) did not contain this specified \lstinline{originId}.
 
-The solution that has been taken is to avoid non-necessary over complications and consider only a single compilation at a time, which is the currently implemented solution.
+The solution that has been picked is to avoid non-necessary over complications and consider only a single compilation at a time, which is the currently implemented solution.
 
 When the execution is finished, all of these log messages and diagnostics will be forwarded to the Scala-CLI runner, which will then forward them to the user.
 
 \subsection{Extra-feature: deprecated calls}
 
-While testing, it has been noticed that calling deprecated methods did not trigger any diagnostic about deprecation.
+While testing, it has been noticed that calling deprecated methods does not trigger any diagnostic about deprecation.
 
 For example, running the following script~:
 
 \lstinputlisting{./code/deprecated/deprecated_example.scala}
 
-would not trigger any diagnostic, whether the worksheet mode was enabled or disabled. But it would log the following message~:
+would not trigger any diagnostic, regardless of whether the worksheet mode was enabled or disabled. But it would log the following message~:
 
 \begin{lstlisting}
 there was 1 deprecation warning; re-run with -deprecation for details
@@ -450,8 +450,8 @@ Its behavior is not really surprising~:
 
 \begin{itemize}
     \item Checks whether any SBT extra-configuration has been added. If yes, abort.
-    \item Change the Scala target to the Scala CLI target.
-    \item Prepend the code with the following~:
+    \item changes the Scala target to the Scala CLI target.
+    \item Prepends the code with the following~:
     \begin{itemize}
         \item \lstinline{//> using scala "<scala-version>"} with \lstinline{<scala-version>} being the Scala version of the snippet.
         \item For each dependency~: \\ \lstinline{//> using dep "<dependency.groupId>::<dependency.artifact>::<dependency.version>"} with \lstinline{<dependency.groupId>}, \lstinline{<dependency.artifact>} and \lstinline{<dependency.artifact>} being respectively the dependency's \lstinline{groupId}, \lstinline{artifact}'s name and \lstinline{version} the version.
@@ -463,11 +463,11 @@ Its behavior is not really surprising~:
 
 As shown in the figure \ref{fig:scastie_architecture}, the Metals server is totally independent from the Scastie server and the runners. Therefore, we need to make Metals understand the Scala-CLI directives.
 
-Let note that the auto-completion of the \lstinline{//> using dep} is already there by default on Metals when worksheet mode is disabled. To understand why, we need to look at the Metals architecture.
+Note that the auto-completion of the \lstinline{//> using dep} is already there by default on Metals when worksheet mode is disabled. To understand why, we need to look at the Metals architecture.
 
 \subsection{Introduction to the Metals server}
 
-The Metals runner uses ScalaMeta's presentation compiler. Since instantiating a presentation compiler is a costly operation, Metals keeps a single instance of it and reuses it for every request~: there is no idea of a session, every request does not contain session details and the only thing that matters is the configuration of the snippet.
+The Metals runner uses ScalaMeta's presentation compiler. Since instantiating a presentation compiler is a costly operation, Metals keeps a single instance of it and reuses it for every request~: there is no idea of a session, no request contains session details and the only thing that matters is the configuration of the snippet.
 
 Here is a quick overview of how the Scastie client and the Metals server interact, hence a quick list of the endpoints that matter~:
 
@@ -475,7 +475,7 @@ Here is a quick overview of how the Scastie client and the Metals server interac
     \item \lstinline{/isConfigurationSupported}~: sent out by the client containing a \href{https://github.com/Maeeen/scastie/blob/main/api/src/main/scala/com.olegych.scastie.api/ApiModels.scala#LL132C101-L132C101}{\lstinline{ScastieMetalsOption(dependencies: Set[ScalaDependency], scalaTarget: ScalaTarget)}}
     
     \item \lstinline{/complete}~: sent out by the client containing a \href{https://github.com/Maeeen/scastie/blob/23e0fa998565a37d8ecfa36fa64d1268a9c1d12c/api/src/main/scala/com.olegych.scastie.api/ApiModels.scala#L169}{\lstinline{LSPRequestDTO(options: ScastieMetalsOption, offsetParams: ScastieOffsetParams)}}
-    \item and other similar requests to get documentation where every of them contains a \lstinline{ScastieMetalsOption} with a \lstinline{ScastieOffsetParams} to give the cursor's position.
+    \item and other similar requests to get documentation where every one of them contains a \lstinline{ScastieMetalsOption} with a \lstinline{ScastieOffsetParams} to give the cursor's position.
 \end{itemize}
 
 When a client wants to make any of these requests, it should first of all probe the Metals runner to know whether the current configuration of the user is supported ; then it can make the \lstinline{/complete} request or similar. Note that in fact the \lstinline{/isConfigurationSupported} is not mandatory, but it is a good practice to actually show to the user that the configuration is not supported.
@@ -492,9 +492,9 @@ object worksheet {
 }
 \end{lstlisting}
 
-With this in mind, we can understand why the \lstinline{//> using dep} was working without worksheet mode. When worksheet mode is disabled, the said instrumentation is then disabled and auto-completes as desired because it is at the top of the file.
+With that in mind, we can understand why the \lstinline{//> using dep} was working without worksheet mode. When worksheet mode is disabled, the said instrumentation is then disabled and auto-completes as desired because it is at the top of the file.
 
-The chosen solution to split the user code as done in the Scala-CLI runner's instrumentation part.
+The chosen solution is to split the user code as done in the Scala-CLI runner's instrumentation part.
 
 \begin{lstlisting}
 <user directives>
@@ -503,7 +503,7 @@ object worksheet {
 }
 \end{lstlisting}
 
-When the user is making such a request, we need to appropriately take into consideration the given offset of the cursor. If the cursor is located in the directives, we do nothing. Otherwise, we need to appropriately offset it by \lstinline|object worksheet {\n| with the directives of the user.
+When the user makes such a request, we need to appropriately take into consideration the given offset of the cursor. If the cursor is located in the directives, we do nothing. Otherwise, we need to appropriately offset it by \lstinline|object worksheet {\n| with the directives of the user.
 
 One may read the code that handles this on the following file \href{https://github.com/Maeeen/scastie/blob/main/metals-runner/src/main/scala/scastie/metals/DTOExtensions.scala}{metals-runner/src/\ldots/DTOExtensions.scala}
 
@@ -517,15 +517,15 @@ To enable such an auto-completion, dependencies should be parsed and resolved at
     \item Parse the directives and resolve dependencies on the Scala-CLI's runner end and make the client aware of it, then make appropriate requests to the Metals runner with these information.
 \end{enumerate}
 
-The first choice is something that costs too much to the client to do. We want it to be lightweight so that it can run on any device. Keep in mind that we have to make it "refreshable" (i.e. when adding a dependency, either client or servers should be aware of such changes and give proper auto-completions).
+The first choice costs too much to the client to do. We want it to be lightweight so that it can run on any device. Keep in mind that we have to make it "refreshable" (i.e. when adding a dependency, either client or servers should be aware of such changes and give proper auto-completions).
 
 The last choice is too complex and involves creating new transmissions channels amongst totally independent components.
 
-One can try to make it simple and the second solution has been chosen~: parse the directives server side, check whether all the dependencies are compatible and return a \lstinline{ScastieMetalsOption} with the Scala version and the dependencies. The client will have to send the \lstinline{ScastieMetalsOption} in every request so that every call that worked using traditional targets will work with this specific \lstinline{ScastieMetalsOption}. This will be discussed further, in the next subsection :).
+Because of its simplicity, the second solution has been picked~: parse the directives server side, check whether all the dependencies are compatible and return a \lstinline{ScastieMetalsOption} with the Scala version and the dependencies. The client will have to send the \lstinline{ScastieMetalsOption} in every request so that every call that worked using traditional targets will work with this specific \lstinline{ScastieMetalsOption}. This will be discussed further, in the next subsection :).
 
 \subsection{Parsing the directives}
 
-Handling directives is simply about converting a \lstinline{ScastieMetalsOption} that has Scala-CLI as a target to a \lstinline{ScastieMetalsOption} that does not have Scala-CLI as a target. The code that does this is located inside the \href{https://github.com/Maeeen/scastie/blob/main/metals-runner/src/main/scala/scastie/metals/ScalaCliParser.scala#LL47C14-L47C14}{metals-runner/\ldots/ScalaCliParser.scala} file.
+Handling directives is simply about converting a \lstinline{ScastieMetalsOption} that has Scala-CLI as a target to a \lstinline{ScastieMetalsOption} that does not. The code that does this is located inside the \href{https://github.com/Maeeen/scastie/blob/main/metals-runner/src/main/scala/scastie/metals/ScalaCliParser.scala#LL47C14-L47C14}{metals-runner/\ldots/ScalaCliParser.scala} file.
 
 VirtusLab provides a library \lstinline{using_directives} to parse these directives, available on \href{https://github.com/VirtusLab/using_directives}{Github} and \href{https://mvnrepository.com/artifact/org.virtuslab.scala-cli/directives_3}{Maven}. This library has been used to quickly parse the directives and create a proper \lstinline{ScastieMetalsOption} from the directives~!
 
@@ -533,9 +533,9 @@ Let note that in the case where no directives are provided, the latest Scala 3 v
 
 \subsection{Updating the client with the new working of ScastieMetalsOption}
 
-As well, proper modifications on the so-called \lstinline{InteractiveProvider} (which is the component that handles Metals) have been done to make it aware of the new \lstinline{ScastieMetalsOption} and the modified file can be consulted at \href{https://github.com/Maeeen/scastie/blob/main/client/src/main/scala/com.olegych.scastie.client/components/editor/InteractiveProvider.scala#LL46C26-L46C26}{client/\ldots/InteractiveProvider.scala}.
+In addition, proper modifications on the so-called \lstinline{InteractiveProvider} (which is the component that handles Metals) have been done to make it aware of the new \lstinline{ScastieMetalsOption} and the modified file can be consulted at \href{https://github.com/Maeeen/scastie/blob/main/client/src/main/scala/com.olegych.scastie.client/components/editor/InteractiveProvider.scala#LL46C26-L46C26}{client/\ldots/InteractiveProvider.scala}.
 
-The details do not really matter and neither are interesting.
+The details neither really matter nor are interesting.
 
 \subsection{And what about a refresh?}
 
@@ -556,7 +556,7 @@ Hence, the selected solution is the second one. When the user changes the direct
     \caption{Refresh directives button}
 \end{figure}
 
-\underline{Note}~: details of implementation are not discussed because it is 1. not relevant in the context of this report, 2. talks about how ReactJS works and handles components which is not the purpose of this report and also is a bit of hell. The focus of the author is to explain the given user experience and the technical details that are relevant to the project. If any question occur about the implementation of this specific part, the author (me) will be happy to address them.
+\underline{Note}~: details of implementation are not discussed because they are 1. not relevant in the context of this report, 2. talk about how ReactJS works and handles components which is not the purpose of this report and also are a bit of hell. The focus of the author is to explain the given user experience and the technical details that are relevant to the project. If any question occurs about the implementation of this specific part, the author (me) will be happy to address them.
 
 \section{Conclusion and results?}
 
@@ -590,7 +590,7 @@ We will run the following snippets~:
     \item The same snippet (to check how the IVY cache handles it)
 \end{enumerate}
 
-The goal is to showcase that Scala-CLI handles reload faster than SBT.
+The goal is to showcase that Scala-CLI handles reloads faster than SBT.
 
 Before benchmarking, the \lstinline{~/.ivy2} folder will be removed.
 
@@ -612,9 +612,9 @@ We will measure the timing of the \lstinline{api/progress-sse/<snippet_id>} requ
     }
 \end{table}
 
-We can see that Scala-CLI is faster than SBT when the configuration changes. However, when the configuration does not change, SBT is faster than Scala-CLI.
+We can see that Scala-CLI is faster than SBT when the configuration changes. However, when it does not change, SBT is faster than Scala-CLI.
 
-The main point here is shown, Scala-CLI handles faster the reload, which is something that can easily happen in a real-world scenario~: imagine 7 users (there is 6 runners), each one of them with a different configuration, they will encounter this heavy reload for some of the runs.
+The main point here is shown, Scala-CLI handles the reload faster, which is something that can easily happen in a real-world scenario~: imagine 7 users (there is 6 runners), each one of them with a different configuration, they will encounter this heavy reload for some of the runs.
 
 \subsubsection{Why is Scala-CLI slower when the config does not change?}
 
@@ -640,11 +640,11 @@ Here is a small list of pro and cons of using Scala-CLI~:
 \subsection{Future work}
 
 This project is a proof-of-concept. It showcases the possibles advantages and disadvantages (including the lack of documentation of the build server protocol) of using Scala-CLI on Scastie.
-It remains however a few issues that need to be worked on~:
+However, a few issues remains that need to be worked on~:
 
 \begin{itemize}
     \item Cancelling runs~: one might think of using the OpenJDK version of Scala-CLI and Bloop to cancel the execution of a snippet ; instead of letting the runner spawn Java by itself.
-    \item Surprising "internal error"~: oftenly (or rarely depending on your Scala-CLI version), the runner will return an exception coming from the \lstinline{bsp4j} library. This needs to be properly debugged and the issue may be in the library itself -- that needs to be fixed.
+    \item Surprising "internal error"~: often (or rarely depending on your Scala-CLI version), the runner will return an exception coming from the \lstinline{bsp4j} library. This needs to be properly debugged and the issue may be in the library itself -- that needs to be fixed.
     \item Better auto-completion of directives~: currently, we rely on the Metals runner for the completion of directives. A fancy UI could be made to help the user to write directives.
 \end{itemize}
 
@@ -659,12 +659,13 @@ Since most links are already in the report, here is a quick list of references t
 
 \section{Special thanks}
 
-A real and grateful thanks to~:
+Many thanks to~:
 
 \begin{itemize}
     \item Jędrzej Rochala for all the support, either technical or emotional and the nice talks we had about the Scala language that will mark my life forever
     \item Julien Richard-Foy and also again Jędrzej Rochala for the trust they gave me to work on this project (despite this being originally a master project~!)
     \item VirtusLab for Scala-CLI and the using\_directives library
+    \item Antoine Tran and Michael Zhang for helping me re-reading the report
 \end{itemize}
 
 It has been a pleasure to explore the Scala language in this manner and I hope that this project will be useful to the community~!
