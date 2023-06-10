@@ -10,8 +10,6 @@ footer: Marwan Azuz -- 29/06/23
 
 > Please try to avoid printing this document, use the online version for links and saving trees 🌳
 
----
-
 <!-- _footer : Reference: report chapter 0.0 -->
 # Before anything
 
@@ -26,32 +24,34 @@ footer: Marwan Azuz -- 29/06/23
 # What is [Scastie](https://scastie.scala-lang.org/)?
 
 * A demo is worth a thousand words…
+
 ---
 
-# Why?
+# What is Scala-CLI?
 
-* Delays with SBT on different configurations
-* Friendly directives
+<!-- _footer: Reference: report chapter 1.4 -->
+
+* A Scala runner with extra features.
+* We focus on directives.
 
 ```scala
-//> using scala 3.2.0
-//> using dep "<dep>
-
-@main def main = println("hello")
-
+//> using scala "3.2.2"
+//> using dep "com.lihaoyi::os-lib:0.9.1"
 ```
 
----
+* Better than `build.sbt` sometimes…
 
-<!-- _footer: Reference: report chapter 1.2, 1.3 -->
+---
 
 # How Scastie works?
 
-![](../architecture.svg)
+<!-- _footer: Reference: report chapter 1.3 -->
 
-<!-- Quick overview -->
+![](./../architecture.svg)
 
---- 
+→ The issue: reloading takes too much time on runners
+
+---
 
 # Steps
 
@@ -63,15 +63,13 @@ footer: Marwan Azuz -- 29/06/23
 
 ---
 
-# 1. The Scala-CLI Runner
-
-![](./zoom_sbt_runner.svg)
+# 1. How the Scala-CLI runner was born…
 
 ---
 
 <!-- _footer: Reference: Report, 2.1 -->
 
-## 1. A first <!-- joke --> ~~stupid~~ <!-- joke end --> idea 
+## a. A first ~~stupid~~ idea, the prototype
 
 ![](../scli_1.svg)
 
@@ -261,8 +259,94 @@ object Playground extends ScastieApp {
     }
 }
 ```
+---
+marp: true
+paginate: true
+footer: Marwan Azuz -- 29/06/23
+---
+
+# Welcome!
+# Implementing Scala-CLI on Scastie
+## Semester bachelor project at the Scala-Center
+
+> Please try to avoid printing this document, use the online version for links and saving trees 🌳
+
+<!-- _footer : Reference: report chapter 0.0 -->
+# Before anything
+
+
+* I hope you are having a great day.
+* Take a bottle of water, it is really hot outside :hot_face:
+* This oral presentation is a condensed and oral version of my report. Some details had to be removed but for completeness, you may refer to it.
+  * Every slide that has a link to the report will be mentionned in the footer.
 
 ---
+
+# What is [Scastie](https://scastie.scala-lang.org/)?
+
+* A demo is worth a thousand words…
+
+---
+
+# What is Scala-CLI?
+
+<!-- _footer: Reference: report chapter 1.4 -->
+
+* A Scala runner with extra features.
+* We focus on directives.
+
+```scala
+//> using scala "3.2.2"
+//> using dep "com.lihaoyi::os-lib:0.9.1"
+```
+
+* Better than `build.sbt` sometimes…
+
+---
+
+# How Scastie works?
+
+<!-- _footer: Reference: report chapter 1.3 -->
+
+![](./../architecture.svg)
+
+→ The issue: reloading takes too much time on runners
+
+---
+
+# Steps
+
+1. Create the Scala-CLI runner
+2. Create UI components for Scala-CLI
+3. Make directives work with Metals
+
+![](./toc_presentation.svg)
+
+---
+
+# 1. How the Scala-CLI runner was born…
+
+---
+
+<!-- _footer: Reference: Report, 2.1 -->
+
+## a. A first ~~stupid~~ idea, the prototype
+
+![](../scli_1.svg)
+
+* The issue?
+→ Compilation errors are not machine readable. Hard to handle them and forward them nicely to the users.
+→ Might create some obvious issues with my colleague…
+
+---
+
+## Previous implementation with SBT
+
+:warning: The runner was **parsing the process' output**! Crazy people… I'm lazy.
+
+:+1: Lazy is a good point despite what you might think, I like to write the fewest lines of code possible so it is easy to maintain :wink:
+
+---Previous
 
 # Remarks on the instrumentation
 
