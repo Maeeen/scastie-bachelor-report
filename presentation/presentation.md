@@ -76,7 +76,7 @@ footer: Marwan Azuz -- 29/06/23
 
 * The issue?
 → Compilation errors are not machine readable. Hard to handle them and forward them nicely to the users.
-→ Might create some obvious issues with my colleague…
+→ Might create some obvious issues with my colleague you've seen previously…
 
 ---
 
@@ -553,6 +553,14 @@ The selected solution:
 
 ---
 
+# Next steps
+
+* Refactor the code to make it more understandable for the maintainers.
+* Solve issues with BSP library that sometimes crashes with an "internal error" issue.
+* Merge it if it is approved :)
+
+---
+
 # But nice things do not last in life…
 
 ---
@@ -562,14 +570,14 @@ The selected solution:
 ---
 
 # Thank you for listening and your attention
-Thanks for Julien Richard-Foy and Jędrzej Rochala for letting me work on this project
-It was a freaking good atmosphere to work on such a project. I will miss those weekly meetings on Monday with Jędrzej :smiling_face_with_tear:.
+* Thanks for Julien Richard-Foy and Jędrzej Rochala for letting me work on this project
+  * It was a freaking good atmosphere to work on such a project. I will miss those weekly meetings on Monday with Jędrzej :smiling_face_with_tear:.
 
-Thanks to Eugène Flesselle and Hamza Remmal for giving some tips, gave some ideas, talking about the project.
+* Thanks to Eugène Flesselle and Hamza Remmal for giving some tips, gave some ideas, talking about the project.
 
-All of this made me fond of the Scala ecosystem. Maybe count me as a future Dotty contributor?
+* All of this made me fond of the Scala ecosystem. Maybe count me as a future Dotty contributor?
 
-I hope the project suited your expectations, because it did suit mines.
+* I hope the project suited your expectations, because it did suit mines.
 
-> You are now well prepared for "hell" codebases − Jędrzej, 2023
+* > You are now well prepared for "hell" codebases − Jędrzej, 2023
 
