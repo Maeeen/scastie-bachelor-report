@@ -34,10 +34,12 @@ footer: Marwan Azuz -- 29/06/23
 
 * A Scala runner with extra features.
 * We focus on directives.
-
+  * Extra-comments that can be placed *at the beginning of the file*.
 ```scala
 //> using scala "3.2.2"
 //> using dep "com.lihaoyi::os-lib:0.9.1"
+
+@main def hello = println("hello world!")
 ```
 
 * Better than `build.sbt` sometimes…
@@ -131,16 +133,9 @@ A protocol to talk to compilers. Inspired by the Language Server Protocol.
 
 <!-- joke -->
 ---
-
 # Why BSP?
 
 * Because Jędrzej (❤️) told me so…
-
----
-
-# Please stop joking, it's a serious presentation.
-
-<!-- joke end -->
 
 ---
 
@@ -156,8 +151,8 @@ A protocol to talk to compilers. Inspired by the Language Server Protocol.
 
 # What's more? Extensions! 💕
 
-* If the compiler has specific capabilities, some endpoints are defined. In the case of Scala and this project, the endpoint `buildTarget/scalaMainClasses` was useful.
-* Why? Wait for a bit… Everything in its time!
+* If the compiler has specific capabilities, some endpoints are defined.
+  * Example: In the case of Scala, the endpoint `buildTarget/scalaMainClasses` is defined.
 
 ---
 
@@ -519,7 +514,7 @@ Also, users can convert snippets from SBT to Scala-CLI
 
 # Interesting part again: Metals
 
-How does it work?! How do I make it work?! \*panic\* :face_with_peeking_eye: :sweat:
+How does it work?! How do I make it work?! \*panic\* 🫣 :sweat:
 
 ---
 
@@ -534,7 +529,7 @@ Focus on the Metals runner. It is totally independant.
 # How do the client get auto-completions?
 
 * Client sends a `/isConfigurationSupported` to know whether the configuration (i.e. set of dependencies and Scala version) are compatible and if the auto-completion is possible.
-* Client sends a multiple requests when hovering, etc. with the configuration.
+* Client sends a multiple requests when hovering, etc. with the configuration inside a `ScastieMetalsOption` case class.
 
 ---
 
@@ -574,8 +569,6 @@ The selected solution:
   * It was a freaking good atmosphere to work on such a project. I will miss those weekly meetings on Monday with Jędrzej :smiling_face_with_tear:.
 
 * Thanks to Eugène Flesselle and Hamza Remmal for giving some tips, gave some ideas, talking about the project.
-
-* All of this made me fond of the Scala ecosystem. Maybe count me as a future Dotty contributor?
 
 * I hope the project suited your expectations, because it did suit mines.
 
