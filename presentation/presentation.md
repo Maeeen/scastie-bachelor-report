@@ -33,6 +33,7 @@ footer: Marwan Azuz -- 29/06/23
 <!-- _footer: Reference: report chapter 1.4 -->
 
 * A Scala runner with extra features.
+* Blazing fast.
 * We focus on directives.
   * Extra-comments that can be placed *at the beginning of the file*.
 ```scala
@@ -279,12 +280,6 @@ Fairly easy thanks to the Scala standard library.
 
 ---
 
-# Now, what is the runner doing?
-
-Let's backtrack to all my tries, including the one where I took my laptop out in the replacement bus from Genève Cornavin to Chêne-Bourg, looking like a nerd in front of normal people.
-
----
-
 # What's doing the runner?
 ## 1. Starting Scala-CLI in BSP
 
@@ -457,8 +452,6 @@ As I said, BSP is amazing. They have thought of everything.
 
 # We are grown-ups. I have enough knowledge (:lying_face:) to run it by myself.
 
-:warning: Scala cool kid area :sunglasses:
-
 We can control the running process as we want to 🥰, including terminating it.
 
 ---
@@ -477,6 +470,12 @@ Extension of BSP for JVM:
 In UNIX-like, classpath directories are separated by `:`. On Windows, it is `;`…
 
 Took me a while to find this.
+
+---
+
+# Downside of executing Java on our own
+
+* Running time depends on the Java flavor (GraalVM, OpenJDK, …)
 
 ---
 
@@ -514,7 +513,7 @@ Also, users can convert snippets from SBT to Scala-CLI
 
 # Interesting part again: Metals
 
-How does it work?! How do I make it work?! \*panic\* 🫣 :sweat:
+How does it work?! How do I make it work?! 🫣 :sweat:
 
 ---
 

@@ -38,14 +38,15 @@
 </ul>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="4" data-marpit-fragments="4" data-paginate="true" data-footer="Reference: report chapter 1.4" data-marpit-pagination="4" data-marpit-pagination-total="61" style="--paginate:true;--footer:Reference: report chapter 1.4;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="4" data-marpit-fragments="5" data-paginate="true" data-footer="Reference: report chapter 1.4" data-marpit-pagination="4" data-marpit-pagination-total="61" style="--paginate:true;--footer:Reference: report chapter 1.4;">
 <h1 id="what-is-scala-cli">What is Scala-CLI?</h1>
 
 <ul>
 <li data-marpit-fragment="1">A Scala runner with extra features.</li>
-<li data-marpit-fragment="2">We focus on directives.
+<li data-marpit-fragment="2">Blazing fast.</li>
+<li data-marpit-fragment="3">We focus on directives.
 <ul>
-<li data-marpit-fragment="3">Extra-comments that can be placed <em>at the beginning of the file</em>.</li>
+<li data-marpit-fragment="4">Extra-comments that can be placed <em>at the beginning of the file</em>.</li>
 </ul>
 </li>
 </ul>
@@ -55,7 +56,7 @@
 <span class="hljs-meta">@main</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hello</span> </span>= println(<span class="hljs-string">&quot;hello world!&quot;</span>)
 </code></pre>
 <ul>
-<li data-marpit-fragment="4">Better than <code>build.sbt</code> sometimes…</li>
+<li data-marpit-fragment="5">Better than <code>build.sbt</code> sometimes…</li>
 </ul>
 <footer>Reference: report chapter 1.4</footer>
 </section>
@@ -269,22 +270,17 @@
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="27" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="27" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
-<h1 id="now-what-is-the-runner-doing">Now, what is the runner doing?</h1>
-<p>Let's backtrack to all my tries, including the one where I took my laptop out in the replacement bus from Genève Cornavin to Chêne-Bourg, looking like a nerd in front of normal people.</p>
-<footer>Marwan Azuz -- 29/06/23</footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="28" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="28" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="whats-doing-the-runner">What's doing the runner?</h1>
 <h2 id="1-starting-scala-cli-in-bsp">1. Starting Scala-CLI in BSP</h2>
 <p>Spawns a <code>scala-cli bsp .</code> in a temporary empty folder. Scala-CLI initializes a new workspace.</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="29" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="29" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="28" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="28" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <p>I lied…</p>
 <p>It spawns <code>scala-cli bsp . -deprecation</code> to enable warnings on deprecations: <img class="emoji" draggable="false" alt="🤠" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f920.svg" data-marp-twemoji=""/>.</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="30" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="30" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="29" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="29" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h2 id="2-inits-a-bsp-connection-to-the-server">2. Inits a BSP connection to the server</h2>
 <p><code>build/initialize</code>:</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">InitializeBuildParams</span> {
@@ -308,11 +304,11 @@
 </code></pre>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="31" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="31" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="30" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="30" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <p>Once finished,</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="32" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="32" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="31" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="31" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="the-runner-is-ready-for-run-requests">The runner is ready for run requests!</h1>
 <p>Overall idea:</p>
 <ol>
@@ -323,27 +319,27 @@
 <p>You have seen the code before and it has way many more steps, what happened?!</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="33" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="33" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="32" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="32" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h2 id="1-instrumenting-the-code">1. Instrumenting the code</h2>
 <p>We have to take into consideration the directives. This is done.</p>
 <p>Write everything to a file <code>main.scala</code>.</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="34" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="34" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="33" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="33" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h3 id="%E2%9A%A0%EF%B8%8F-instrumentation-needs-to-know-the-scala-version"><img class="emoji" draggable="false" alt="⚠️" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/26a0.svg" data-marp-twemoji=""/> Instrumentation needs to know the Scala version</h3>
 <p>The runner tries to find the directive <code>//&gt; using scala &quot;&lt;version&gt;&quot;</code>. Finds the target from <code>&lt;version&gt;</code> and forward it to the instrumenter!</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="35" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="35" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="34" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="34" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="bsp-world-is-here">BSP world is here.</h1>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="36" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="36" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="35" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="35" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h2 id="2-compile-the-code">2. Compile the code</h2>
 <p>Compilation was fairly easy to handle. But how does it work?</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="37" data-marpit-fragments="3" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="37" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="36" data-marpit-fragments="3" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="36" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h3 id="how-does-it-work">How does it work?</h3>
 <ul>
 <li data-marpit-fragment="1">Client (Scala-CLI runner) sends a <code>buildTarget/compile</code> request.</li>
@@ -352,7 +348,7 @@
 </ul>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="38" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="38" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="37" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="37" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <p>But before compiling, we need to refresh the workspace (to be extra-sure) that dependencies are taken into consideration!</p>
 <p>So the steps of compiling are:</p>
 <ol>
@@ -362,14 +358,14 @@
 </ol>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="39" data-paginate="true" data-footer="Reference: report 2.2.3" data-marpit-pagination="39" data-marpit-pagination-total="61" style="--paginate:true;--footer:Reference: report 2.2.3;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="38" data-paginate="true" data-footer="Reference: report 2.2.3" data-marpit-pagination="38" data-marpit-pagination-total="61" style="--paginate:true;--footer:Reference: report 2.2.3;">
 <h1 id="compilation-is-working-except-something">Compilation is working! Except something…</h1>
 <h2 id="infinite-compilations">Infinite compilations</h2>
 <p>With Scala's meta-programming, it is possible to make code that never compiles. Despite sending cancellation requests, the cancellation never ends for the current file (that may contain this issue).</p>
 <p>The chosen solution is to log the problematic script, <code>sys.exit(-1)</code> and let Docker restart the container.</p>
 <footer>Reference: report 2.2.3</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="40" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="40" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="39" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="39" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <p>Example of non-compiling code (please do not compile it):</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-scala"><span class="hljs-comment">//&gt; using scala &quot;3.2.2&quot;</span>
 <span class="hljs-comment">//&gt; using lib &quot;co.fs2::fs2-io:3.6.1&quot;</span>
@@ -384,7 +380,7 @@
 <p>The runner is limited to 1.5GB of RAM.</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="41" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="41" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="40" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="40" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="where-are-we">Where are we?</h1>
 <ol>
 <li>Instrumentation <img class="emoji" draggable="false" alt="✅" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/2705.svg" data-marp-twemoji=""/></li>
@@ -393,12 +389,12 @@
 </ol>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="42" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="42" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="41" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="41" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="how-to-run-the-code">How to run the code?</h1>
 <p>Use <code>buildTarget/run</code> and voilà!</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="43" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="43" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="42" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="42" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="it-did-work-as-intented-however">It did work as intented! However…</h1>
 <p>Non-finishing programs such as:</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-scala"><span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>) <span class="hljs-keyword">do</span> println(<span class="hljs-string">&quot;hello to the ones reading the slides!&quot;</span>)
@@ -410,18 +406,17 @@
 <p>We can send a cancellation request to Scala-CLI to stop the program.</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="44" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="44" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="43" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="43" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <p>But, it did not <strong>work</strong> for a reason that is obscure and related to Scala-CLI's codebase. How to make it work then?</p>
 <p>As I said, BSP is amazing. They have thought of everything.</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="45" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="45" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="44" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="44" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="we-are-grown-ups-i-have-enough-knowledge-%F0%9F%A4%A5-to-run-it-by-myself">We are grown-ups. I have enough knowledge (<img class="emoji" draggable="false" alt="🤥" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f925.svg" data-marp-twemoji=""/>) to run it by myself.</h1>
-<p><img class="emoji" draggable="false" alt="⚠️" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/26a0.svg" data-marp-twemoji=""/> Scala cool kid area <img class="emoji" draggable="false" alt="😎" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f60e.svg" data-marp-twemoji=""/></p>
 <p>We can control the running process as we want to <img class="emoji" draggable="false" alt="🥰" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f970.svg" data-marp-twemoji=""/>, including terminating it.</p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="46" data-marpit-fragments="2" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="46" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="45" data-marpit-fragments="2" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="45" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="running-java-by-ourselves">Running Java by ourselves</h1>
 <p>Extension of BSP for JVM:</p>
 <ul>
@@ -433,10 +428,17 @@
 </ul>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="47" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="47" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="46" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="46" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="%E2%9A%A0%EF%B8%8F-do-not-fall-in-the-same-trap-as-me"><img class="emoji" draggable="false" alt="⚠️" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/26a0.svg" data-marp-twemoji=""/> Do not fall in the same trap as me.</h1>
 <p>In UNIX-like, classpath directories are separated by <code>:</code>. On Windows, it is <code>;</code>…</p>
 <p>Took me a while to find this.</p>
+<footer>Marwan Azuz -- 29/06/23</footer>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="47" data-marpit-fragments="1" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="47" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
+<h1 id="downside-of-executing-java-on-our-own">Downside of executing Java on our own</h1>
+<ul>
+<li data-marpit-fragment="1">Running time depends on the Java flavor (GraalVM, OpenJDK, …)</li>
+</ul>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="48" data-marpit-fragments="2" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="48" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
@@ -470,7 +472,7 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="53" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="53" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
 <h1 id="interesting-part-again-metals">Interesting part again: Metals</h1>
-<p>How does it work?! How do I make it work?! *panic* <img class="emoji" draggable="false" alt="🫣" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1fae3.svg" data-marp-twemoji=""/> <img class="emoji" draggable="false" alt="😓" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f613.svg" data-marp-twemoji=""/></p>
+<p>How does it work?! How do I make it work?! <img class="emoji" draggable="false" alt="🫣" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1fae3.svg" data-marp-twemoji=""/> <img class="emoji" draggable="false" alt="😓" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/1f613.svg" data-marp-twemoji=""/></p>
 <footer>Marwan Azuz -- 29/06/23</footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="54" data-paginate="true" data-footer="Marwan Azuz -- 29/06/23" data-marpit-pagination="54" data-marpit-pagination-total="61" style="--paginate:true;--footer:Marwan Azuz -- 29/06/23;">
